@@ -9,3 +9,4 @@ pub mod server_worker;
 pub mod socket;
 pub mod user;
 pub mod x11;
+pub mod rosetta;

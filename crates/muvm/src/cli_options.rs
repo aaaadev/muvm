@@ -65,7 +65,7 @@ pub fn options() -> OptionParser<Options> {
     let emulator = long("emu")
         .help(
             "Which emulator to use for running x86_64 binaries.
-             Valid options are \"box\" and \"fex\". If this argument is not
+             Valid options are \"box\", \"fex\" and \"rosetta\". If this argument is not
              present, muvm will try to use FEX, falling back to Box if it
              can't be found.",
         )

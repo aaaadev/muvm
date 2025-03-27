@@ -18,6 +18,7 @@ pub struct Launch {
 pub enum Emulator {
     Box,
     Fex,
+    Rosetta,
 }
 
 impl FromStr for Emulator {
@@ -29,6 +30,8 @@ impl FromStr for Emulator {
             Ok(Emulator::Box)
         } else if v.starts_with("fex") {
             Ok(Emulator::Fex)
+        } else if v.starts_with("rosetta") {
+            Ok(Emulator::Rosetta)
         } else {
             Err(anyhow!("Invalid or unsupported emulator"))
         }
