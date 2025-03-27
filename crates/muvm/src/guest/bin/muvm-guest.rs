@@ -13,11 +13,11 @@ use muvm::guest::fex::setup_fex;
 use muvm::guest::hidpipe::start_hidpipe;
 use muvm::guest::mount::mount_filesystems;
 use muvm::guest::net::configure_network;
+use muvm::guest::rosetta::setup_rosetta;
 use muvm::guest::server::server_main;
 use muvm::guest::socket::setup_socket_proxy;
 use muvm::guest::user::setup_user;
 use muvm::guest::x11::setup_x11_forwarding;
-use muvm::guest::rosetta::setup_rosetta;
 use muvm::utils::launch::{Emulator, GuestConfiguration, PULSE_SOCKET};
 use nix::unistd::{Gid, Uid};
 use rustix::process::{getrlimit, setrlimit, Resource};
@@ -86,18 +86,18 @@ fn main() -> Result<()> {
             Emulator::Fex => setup_fex()?,
             Emulator::Rosetta => setup_rosetta()?,
         };
-    } else if let Err(err) = setup_fex() {
+    } else if let Err(err) = setup_rosetta() {
+        eprintln!("Error setting up Rosetta in binfmt_misc: {err}");
+        eprintln!("Failed to find or configure Rosetta, falling back to FEX");
+
+        if let Err(err) = setup_fex() {
         eprintln!("Error setting up FEX in binfmt_misc: {err}");
         eprintln!("Failed to find or configure FEX, falling back to Box");
 
         if let Err(err) = setup_box() {
             eprintln!("Error setting up Box in binfmt_misc: {err}");
-            eprintln!("Failed to find or configure FEX, falling back to Rosetta");
-
-            if let Err(err) = setup_rosetta() {
-                eprintln!("Error setting up Rosetta in binfmt_misc: {err}");
                 eprintln!("No emulators were configured, x86 emulation may not work");
-            }
+        }
         }
     }
 
